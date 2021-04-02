@@ -1,0 +1,57 @@
+DES / Data Encryption Standard / 정보 암호화 표준
+
+block cipher
+혼돈과 확산
+Feistel 구조
+
+64-bit blocks
+56-bit keys
+16 rounds
+
+과정
+plaintext X -> initial permutation IP
+16 rounds (permutation, XORs, and substitutions
+inverse permutation IP^-1 -> ciphertext X
+
+key 제조 과정
+64-bit -> 56-bit // parity 비트는 제외
+1. initial key selection permutation (parity 비트를 빼는 과정 포함)
+2. 28bit씩 좌우로 분할 후 1 or 2 left shift (라운드에 누적이라 16라운드 지나면 28 shift로 돌아오게 되어있다)
+3. compression permutation / 56bit를 48bit로 압축 순열
+4. 2번의 결과를 다음 라운드로 내려보낸다 
+라운드마다 2~4번을 반복
+
+암호 제조 과정
+1. initial permutation
+2. 좌우 분할 후 우측 키를 Expansion permutation(E) 32 -> 48bit
+3. E의 결과와 subkey랑 XOR 후 S-box substitution 48 -> 32bit
+	48을 6bit씩 8개의 박스들 각각 6->4bit로 만듦
+S-box : 4x16 행열 input의 앞뒤가 행 중간이 열 해당 행열 값을 2진수로 출력
+4. S-box의 결과를 P-box permutation // 32bit가 뒤섞어진다
+5. 4의 결과를 2번의 좌측 32bit랑 XOR
+6. 좌측값은 2번의 우측값, 우측값은 5번의 결과를 내려보낸다
+라운드마다 2~6 반복
+16라운드 후에 앞뒤 32bit swap
+마지막에 inverse initial permutation
+
+
+복호화는 subkey를 역순으로 넣어서 암호 제조 과정을 반복하면 된다
+
+DES의 효과
+ 눈사태 효과 : 좋은 암호화는 1bit만 바뀌어도 output이 반이나 바뀌었다
+
+000000 111111 0000011111 1111000 같은 쓰레기 키는 쓰지 말자
+
+Multiple DES
+이중 DES, Triple DES 등등 DES를 계속 사용하고싶어서 중첩해 썼었다
+ > K1으로 암호화 > K2로 복호화 > K1으로 암호화 // Triple DES
+ 복호화는 역순
+좀 복잡해지니까 후에 AES로 발전했다. (Advanced Encryption Standard)
+
+-------------------------
+Plaintext: 0123456789ABCDEF
+
+Key: 85E813540F0AB405
+
+Cipher Text : E5A951F59B3160C0
+------------------------
